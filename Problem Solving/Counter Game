@@ -1,0 +1,98 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+string ltrim(const string &);
+string rtrim(const string &);
+
+/*
+ * Complete the 'counterGame' function below.
+ *
+ * The function is expected to return a STRING.
+ * The function accepts LONG_INTEGER n as parameter.
+ */
+
+int countSetBits(long x){
+    int count = 0;
+    while(x){
+        x &= (x-1);
+        ++count;
+    }
+    return count;
+}
+string counterGame(long n) {
+    /* Basically the trick is to find number of set bits in (n-1). Consider this example:
+        Initially N = 1101001100
+        ------------------- N is not power of 2 ----------------------
+        N = 1101001100          Louise will reduce it by 1000000000
+        N =  101001100          Richard will reduce it by 100000000
+        N =    1001100          Louise will reduce it by    1000000
+        N =       1100          Richard will reduce it by      1000
+
+        ------------------- N(100) is power of 2 ----------------------
+        N =      100          Louise will reduce counter by half
+        N =       10           Richard will reduce counter by half
+        N =        1            Louise can't make a move, hence, loses
+                        Richard is the winner !
+                        
+        We need to count "1s to the left of last 1" and "0s to the right of last 1", to          know the total number of operations.
+        
+        Just Modify the last "100" part of "1101001100" to "011" thus changing the               number to "1101001011" (by substracting 1 i.e., n-1), all we need is to count 1s         in this number i.e. countSetBits in the number.
+    */
+    if(countSetBits(n-1) & 1){
+        // If the last bit is set, it means number (n-1) is odd
+        // Odd number of turns => Louise wins
+        return "Louise";
+    }
+    else{
+        // Richard wins
+        return "Richard";
+    }
+}
+
+int main()
+{
+    ofstream fout(getenv("OUTPUT_PATH"));
+
+    string t_temp;
+    getline(cin, t_temp);
+
+    int t = stoi(ltrim(rtrim(t_temp)));
+
+    for (int t_itr = 0; t_itr < t; t_itr++) {
+        string n_temp;
+        getline(cin, n_temp);
+
+        long n = stol(ltrim(rtrim(n_temp)));
+
+        string result = counterGame(n);
+
+        fout << result << "\n";
+    }
+
+    fout.close();
+
+    return 0;
+}
+
+string ltrim(const string &str) {
+    string s(str);
+
+    s.erase(
+        s.begin(),
+        find_if(s.begin(), s.end(), not1(ptr_fun<int, int>(isspace)))
+    );
+
+    return s;
+}
+
+string rtrim(const string &str) {
+    string s(str);
+
+    s.erase(
+        find_if(s.rbegin(), s.rend(), not1(ptr_fun<int, int>(isspace))).base(),
+        s.end()
+    );
+
+    return s;
+}
