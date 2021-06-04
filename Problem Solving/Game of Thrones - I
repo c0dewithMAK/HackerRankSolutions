@@ -1,0 +1,70 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+/*
+ * Complete the 'gameOfThrones' function below.
+ *
+ * The function is expected to return a STRING.
+ * The function accepts STRING s as parameter.
+ */
+
+string gameOfThrones(string s) {
+    int count[26] = {0};
+    for(char ch : s){
+        int idx = ch - 'a';
+        ++count[idx];
+    }
+    
+    if(s.size()%2 != 0){
+        // If len(s) is ODD, exactly one character should be repeated odd number of times
+        int mid = 0, nonMid = 0;
+        int pos = -1;
+        for(int i = 0; i<26; ++i){
+            if(count[i] == 0)
+                continue;
+        
+            if(count[i]%2 == 0)
+                nonMid += count[i];
+        
+            else if(count[i]%2 == 1){
+                if(mid > 1) // Only 1 character should be repeated odd times
+                            // And this is the character which comes in the middle
+                            // portion of the string
+                    return "NO";
+               pos = i;
+                ++mid;
+           }
+        }
+    
+        if(mid == 1 && nonMid == s.size()-count[pos])
+           return "YES";
+        else {
+           return "NO";
+        }
+    }
+    else{
+        // If len is even, all characters should be repeated even number of times
+        for(int i = 0; i<26; ++i){
+            if(count[i]%2 != 0)
+                return "NO";
+        }
+        return "YES";
+    }
+}
+
+int main()
+{
+    ofstream fout(getenv("OUTPUT_PATH"));
+
+    string s;
+    getline(cin, s);
+
+    string result = gameOfThrones(s);
+
+    fout << result << "\n";
+
+    fout.close();
+
+    return 0;
+}
